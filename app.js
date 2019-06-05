@@ -1,45 +1,60 @@
 function Fruit(props) {
-  return <li>{props.name}</li>;
+  return (
+    <li>
+      {props.type} {props.emoji}
+    </li>
+  );
 }
 
 class Form extends React.Component {
   constructor(props) {
     super(props);
-    // this.fruits = fetch(
-    //   "https://my-json-server.typicode.com/thoughtworks-jumpstart/api/fruits"
-    // )
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     // do something with the data
-    //     data.map(item => item);
-    //   });
-    // console.log(this.fruits);
-    this.fruits = [
-      {
-        id: "0",
-        name: "apple"
-      },
-      {
-        id: "1",
-        name: "banana"
-      },
-      {
-        id: "2",
-        name: "orange"
-      },
-      {
-        id: "3",
-        name: "watermelon"
-      },
-      {
-        id: "4",
-        name: "durian"
-      }
-    ];
+
+    // this.fruits = [
+    //   {
+    //     id: "0",
+    //     name: "apple"
+    //   },
+    //   {
+    //     id: "1",
+    //     name: "banana"
+    //   },
+    //   {
+    //     id: "2",
+    //     name: "orange"
+    //   },
+    //   {
+    //     id: "3",
+    //     name: "watermelon"
+    //   },
+    //   {
+    //     id: "4",
+    //     name: "durian"
+    //   }
+    // ];
 
     this.state = {
-      input: ""
+      input: "",
+      fruits: []
     };
+  }
+
+  componentDidMount() {
+    console.log("mounted");
+    fetch(
+      "https://my-json-server.typicode.com/thoughtworks-jumpstart/api/fruits"
+    )
+      .then(res => res.json())
+      .then(data => {
+        // do something with the data
+        data.map((item, index) => {
+          item["id"] = index;
+        });
+
+        this.setState({
+          fruits: data
+        });
+      });
   }
 
   handleChange = () => {
@@ -50,13 +65,13 @@ class Form extends React.Component {
   };
 
   render() {
-    const filteredFruitList = this.fruits
+    const filteredFruitList = this.state.fruits
       .filter(elem => {
-        let fruit = elem["name"];
+        let fruit = elem["type"];
         return fruit.indexOf(this.state.input) !== -1;
       })
       .map(fruit => {
-        return <Fruit key={fruit.id} name={fruit.name} />;
+        return <Fruit key={fruit.id} type={fruit.type} emoji={fruit.emoji} />;
       });
 
     return (
